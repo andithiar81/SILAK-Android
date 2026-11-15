@@ -1,0 +1,22 @@
+SILAK KECAMATAN MANDAI - PAKET PWA ANDROID OFFLINE
+
+ISI PAKET
+- index.html: prototipe antarmuka SILAK dengan daftar 30 tugas kedinasan.
+- manifest.webmanifest: identitas PWA, nama, deskripsi, ikon.
+- sw.js: cache app shell agar aplikasi dapat dibuka kembali tanpa internet.
+- icons/: ikon aplikasi 192x192 dan 512x512.
+
+CARA PUBLIKASI
+1. Ekstrak ZIP.
+2. Buka https://app.netlify.com/drop
+3. Seret folder SILAK_PWA_Offline ke Netlify Drop.
+4. Buka alamat HTTPS yang diberikan.
+5. Buka https://www.pwabuilder.com dan masukkan alamat tersebut.
+6. Jalankan pemeriksaan; pilih Package For Stores > Android bila semua persyaratan lulus.
+
+BATASAN PENTING
+Ini adalah prototipe PWA offline, BUKAN APK. APK harus dibuat melalui proses packaging PWABuilder/TWA dan belum tersedia di paket ini.
+Login demo pada prototipe: admin / password. Jangan gunakan kredensial ini untuk data resmi.
+Data laporan prototipe disimpan di localStorage browser pada perangkat, bukan SQLite. Data dapat hilang jika data situs/browser dihapus atau aplikasi di-uninstall. Ekspor backup secara berkala.
+Penggunaan pertama dan pemasangan memerlukan internet. Setelah app shell berhasil dicache, antarmuka dapat dibuka offline.
+Sebelum digunakan untuk data kedinasan resmi, fitur, keamanan login, lampiran, cetak, backup/restore, dan pemulihan offline wajib diuji.
