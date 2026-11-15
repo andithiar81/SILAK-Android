@@ -6,7 +6,7 @@
 .print-paper .jenis{text-align:center;font-weight:bold;margin:0 0 20px;font-size:11pt;text-transform:uppercase}
 .print-paper p{line-height:1.35;white-space:pre-wrap;margin:5px 0 10px;text-align:justify}
 .print-paper .evidence-image{display:block;width:36mm;height:42mm;object-fit:contain;margin:0 auto 3px;page-break-inside:avoid}.print-paper .evidence-grid{display:flex;flex-wrap:wrap;gap:5mm;margin:8px 0 12px}.print-paper .evidence-item{width:40mm;border:1px solid #ccc;padding:2mm;text-align:center;font-size:8pt;page-break-inside:avoid}.print-paper .evidence-item p{font-size:8pt;text-align:center;margin:2px 0;line-height:1.2;overflow-wrap:anywhere}
-.print-paper .ttd{text-align:left;width:65mm;margin:26px 0 0 auto;line-height:1.35}.print-paper .identity{display:grid;grid-template-columns:31mm 3mm 1fr;line-height:1.35;margin:0 0 18px}.print-paper .section-label{font-weight:bold;margin-top:10px;display:block}.print-paper .evidence-title{font-weight:bold;margin-top:10px}
+.print-paper .ttd{text-align:left;width:max-content;max-width:100%;margin:26px 0 0 auto;line-height:1.35}.print-paper .ttd img{width:auto;height:auto;max-width:30mm;max-height:22mm;object-fit:contain;display:block;margin:4px 0}.print-paper .ttd .nama-ttd{font-weight:bold;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}.print-paper .identity{display:grid;grid-template-columns:31mm 3mm 1fr;line-height:1.35;margin:0 0 18px}.print-paper .section-label{font-weight:bold;margin-top:10px;display:block}.print-paper .evidence-title{font-weight:bold;margin-top:10px}
 @page{size:215.9mm 355.6mm;margin:0}@media print{html,body{width:215.9mm!important;margin:0!important;padding:0!important;background:#fff!important}.top,.nav,#login,#home,#form,#list,#backup,.print-toolbar{display:none!important}#app,#app main,#printView{display:block!important;margin:0!important;padding:0!important;max-width:none!important;width:215.9mm!important}.print-paper{display:block!important;width:215.9mm!important;max-width:none!important;min-height:355.6mm;margin:0!important;padding:20mm 20mm 18mm!important;box-shadow:none!important}.print-paper .evidence-image{max-height:42mm}.print-paper .evidence-item{page-break-inside:avoid}}
 
 </style></head><body><div id="login" class="wrap"><div class="card brand"><div class="logo">📋</div><h2>SILAK KECAMATAN MANDAI</h2><p class="muted">Sistem Informasi Laporan Kegiatan · Offline</p><label>Username</label><input id="username" value="admin"><label>Password</label><input id="password" type="password" placeholder="Masukkan password"><div class="actions"><button class="primary" style="width:100%" onclick="login()">Masuk</button></div><p class="muted">@ tHiar 2026</p></div></div>
@@ -111,6 +111,11 @@ function formatTanggalID(value){
  const d=new Date(value+'T00:00:00');
  return d.toLocaleDateString('id-ID',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
 }
+function formatTanggalTanpaHari(value){
+ if(!value)return '';
+ const d=new Date(value+'T00:00:00');
+ return d.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
+}
 function printReport(id){
  let x=reports.find(r=>r.id===id);if(!x)return;
  const evidence=(x.files||[]).map(f=>{
@@ -118,8 +123,8 @@ function printReport(id){
    if(f.type==='application/pdf'&&f.data) return `<div class="evidence-item"><p>Dokumen PDF</p><p>${esc(f.name)}</p></div>`;
    return `<div class="evidence-item"><p>${esc(f.name)}</p></div>`;
  }).join('')||'<p>-</p>';
- let sig=x.signature&&x.signature.data?`<br><img src="${x.signature.data}" style="max-width:30mm;max-height:22mm;object-fit:contain;display:block;margin:4px 0">`:'';
- $('printContent').innerHTML=`<h3>LAPORAN HARIAN HASIL PELAKSANAAN TUGAS</h3><div class="jenis">${esc(x.task||'Kegiatan')}</div><div class="identity"><span>Nama</span><span>:</span><span>${esc(x.nama)}</span><span>NI PPPK PW.</span><span>:</span><span>${esc(x.nip)}</span><span>Jabatan</span><span>:</span><span>${esc(x.jabatan)}</span><span>Unit Kerja</span><span>:</span><span>Kantor Kecamatan Mandai</span><span>Hari/Tanggal</span><span>:</span><span>${esc(formatTanggalID(x.tanggal))}</span></div><span class="section-label">1. Uraian Kegiatan</span><p>${esc(x.uraian)}</p><span class="section-label">2. Hasil Kegiatan</span><p>${esc(x.hasil)}</p><span class="evidence-title">3. Bukti Dukung</span><div class="evidence-grid">${evidence}</div><span class="section-label">4. Kesimpulan</span><p>${esc(x.kesimpulan)}</p><div class="ttd">Mandai, ${esc(formatTanggalID(x.tanggal))}<br>Pegawai yang Melaksanakan${sig}<br><b>${esc(x.nama)}</b><br>NI PPPK PW. ${esc(x.nip)}</div>`;
+ let sig=x.signature&&x.signature.data?`<br><img src="${x.signature.data}" alt="Tanda tangan">`:'';
+ $('printContent').innerHTML=`<h3>LAPORAN HARIAN HASIL PELAKSANAAN TUGAS</h3><div class="jenis">${esc(x.task||'Kegiatan')}</div><div class="identity"><span>Nama</span><span>:</span><span>${esc(x.nama)}</span><span>NI PPPK PW.</span><span>:</span><span>${esc(x.nip)}</span><span>Jabatan</span><span>:</span><span>${esc(x.jabatan)}</span><span>Unit Kerja</span><span>:</span><span>Kantor Kecamatan Mandai</span><span>Hari/Tanggal</span><span>:</span><span>${esc(formatTanggalID(x.tanggal))}</span></div><span class="section-label">1. Uraian Kegiatan</span><p>${esc(x.uraian)}</p><span class="section-label">2. Hasil Kegiatan</span><p>${esc(x.hasil)}</p><span class="evidence-title">3. Bukti Dukung</span><div class="evidence-grid">${evidence}</div><span class="section-label">4. Kesimpulan</span><p>${esc(x.kesimpulan)}</p><div class="ttd">Mandai, ${esc(formatTanggalTanpaHari(x.tanggal))}<br>Pegawai yang Melaksanakan${sig}<br><span class="nama-ttd">${esc(x.nama)}</span><br>NI PPPK PW. ${esc(x.nip)}</div>`;
  ['home','form','list','backup'].forEach(id=>$(id).classList.add('hidden'));
  $('printView').classList.remove('hidden');
 }
