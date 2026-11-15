@@ -1,0 +1,13 @@
+SILAK ANDROID - PERBAIKAN LOGIN
+
+Pembaruan ini memperbaiki login pada Android WebView dengan menghilangkan ketergantungan sessionStorage pada file://. Login awal: admin / password.
+
+Untuk memasukkan perbaikan ke GitHub:
+1. Buka repository SILAK-Android.
+2. Buka app/src/main/assets/www/index.html.
+3. Klik Edit (ikon pensil).
+4. Ganti seluruh isi file dengan isi index.html dari folder proyek ini, lalu Commit changes.
+5. Actions akan menjalankan build otomatis. Jika tidak, jalankan Build SILAK APK secara manual.
+6. Unduh artifact SILAK-APK dan ekstrak app-debug.apk.
+
+Catatan pemasangan: APK debug dari GitHub Actions dapat ditandatangani dengan kunci debug baru pada setiap build. Jika Android menolak pembaruan karena tanda tangan berbeda, uninstall APK lama lalu pasang APK baru. Menghapus aplikasi dapat menghapus data lokal lama; jika data lama penting, jangan uninstall sebelum membuat backup.
