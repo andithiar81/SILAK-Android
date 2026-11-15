@@ -1,0 +1,17 @@
+SILAK ANDROID - PAKET PROYEK SIAP BUILD
+
+Aplikasi web SILAK asli disertakan di app/src/main/assets/www dan dijalankan lokal melalui Android WebView.
+Dengan demikian tampilan dan fungsi HTML/JavaScript dipertahankan, serta antarmuka dapat dibuka tanpa internet.
+
+Untuk menghasilkan APK tanpa mengedit kode:
+1. Buat repository GitHub baru bernama SILAK-Android.
+2. Unggah seluruh isi folder proyek ini ke repository (bukan folder induknya).
+3. Buka tab Actions, pilih "Build SILAK APK", lalu klik Run workflow.
+4. Setelah selesai, buka hasil workflow dan unduh artifact "SILAK-APK".
+5. Ekstrak artifact; file app-debug.apk adalah APK untuk dipasang di Android.
+
+Catatan:
+- Ini proyek Android siap-build, bukan APK yang sudah dikompilasi.
+- APK debug cocok untuk pemasangan/uji coba internal, belum ditandatangani sebagai rilis Play Store.
+- Data SILAK tetap tersimpan lokal pada penyimpanan WebView. Backup laporan sebelum menghapus aplikasi/perangkat.
+- Service worker PWA tidak berjalan pada file://, tetapi seluruh shell aplikasi dibundel lokal di APK sehingga tampilan utama dapat dibuka offline.
