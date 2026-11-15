@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.webkit.*
 import android.view.View
 import android.widget.FrameLayout
+import android.print.PrintManager
+import android.content.Context
 
 class MainActivity : Activity() {
     private lateinit var web: WebView
@@ -25,6 +27,16 @@ class MainActivity : Activity() {
         web.settings.loadWithOverviewMode = true
         web.settings.useWideViewPort = true
         web.settings.setSupportZoom(false)
+        web.addJavascriptInterface(object {
+            @JavascriptInterface
+            fun printPage() {
+                runOnUiThread {
+                    val printManager = getSystemService(Context.PRINT_SERVICE) as PrintManager
+                    val adapter = web.createPrintDocumentAdapter("Laporan SILAK")
+                    printManager.print("Laporan SILAK", adapter, android.print.PrintAttributes.Builder().build())
+                }
+            }
+        }, "AndroidPrint")
         web.webViewClient = WebViewClient()
         web.webChromeClient = object : WebChromeClient() {
             override fun onShowFileChooser(

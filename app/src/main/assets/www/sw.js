@@ -1,4 +1,4 @@
-const CACHE_NAME = 'silak-mandai-shell-v2';
+const CACHE_NAME = 'silak-mandai-shell-v3';
 const APP_SHELL = [
   '/',
   '/index.html',
