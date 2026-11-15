@@ -12,7 +12,7 @@
 </style></head><body><div id="login" class="wrap"><div class="card brand"><div class="logo">📋</div><h2>SILAK KECAMATAN MANDAI</h2><p class="muted">Sistem Informasi Laporan Kegiatan · Offline</p><label>Username</label><input id="username" value="admin"><label>Password</label><input id="password" type="password" placeholder="Masukkan password"><div class="actions"><button class="primary" style="width:100%" onclick="login()">Masuk</button></div><p class="muted">@ tHiar 2026</p></div></div>
 <div id="app" class="hidden"><header class="top"><h2>SILAK · Kecamatan Mandai</h2><small id="welcome">Sistem Laporan Kegiatan (Offline)</small></header><nav class="nav no-print"><button class="active" onclick="page('home',this)">Dashboard</button><button onclick="page('form',this)">+ Laporan</button><button onclick="page('list',this)">Data Laporan</button><button onclick="page('backup',this)">Backup Data</button></nav><main class="wrap">
 <section id="home"><div class="stats"><div class="card stat"><span class="muted">Total Laporan</span><b id="count">0</b></div><div class="card stat"><span class="muted">Bulan Ini</span><b id="monthCount">0</b></div></div><div class="card"><h3>Selamat Datang</h3><p>Aplikasi berjalan sepenuhnya di perangkat ini. Data disimpan secara lokal dan tidak dikirim ke server.</p><div class="actions"><button class="primary" onclick="page('form')">Buat Laporan</button><button onclick="page('list')">Lihat Rekap</button></div></div><div class="card"><h3>Informasi Penyimpanan</h3><p class="muted">Simpan backup secara berkala melalui menu Backup Data agar laporan tetap aman saat berganti atau reset HP.</p></div></section>
-<section id="form" class="hidden"><div class="card"><h3 id="formTitle">Tambah Laporan</h3><input type="hidden" id="editId"><label>Kategori Laporan</label><select id="category" onchange="loadOptions()"><option value="task">Tugas Kedinasan Lainnya (30 tugas)</option><option value="jenis">Jenis Kegiatan</option><option value="manual">Uraian Manual</option></select><label>Pilih Tugas / Jenis Kegiatan</label><select id="taskSelect" onchange="fillTask()"></select><label>Nomor Laporan</label><input id="nomor" placeholder="Nomor laporan"><label>Tanggal</label><input id="tanggal" type="date"><label>Nama Pegawai</label><input id="nama" placeholder="Nama lengkap"><label>NI PPPK PW. / NIP</label><input id="nip"><label>Jabatan</label><input id="jabatan"><label>Uraian Kegiatan</label><textarea id="uraian"></textarea><label>Hasil Kegiatan</label><textarea id="hasil"></textarea><label>Kesimpulan</label><textarea id="kesimpulan"></textarea><label>Tanda Tangan Pegawai (gambar)</label><input id="signature" type="file" accept="image/*"><label>Bukti Dukung (foto/PDF/dokumen)</label><input id="files" type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"><p class="filelabel">Berkas disimpan secara lokal di perangkat. Ukuran file besar dapat memenuhi ruang penyimpanan.</p><div class="actions"><button class="primary" onclick="saveReport()">Simpan Laporan</button><button onclick="resetForm()">Batal</button></div></div></section>
+<section id="form" class="hidden"><div class="card"><h3 id="formTitle">Tambah Laporan</h3><input type="hidden" id="editId"><label>Kategori Laporan</label><select id="category" onchange="loadOptions()"><option value="task">Tugas Kedinasan Lainnya (30 tugas)</option><option value="jenis">Jenis Kegiatan</option><option value="manual">Uraian Manual</option></select><label>Pilih Tugas / Jenis Kegiatan</label><select id="taskSelect" onchange="fillTask()"></select><label>Nomor Laporan</label><input id="nomor" placeholder="Nomor laporan"><label>Tanggal</label><input id="tanggal" type="date"><label>Nama Pegawai</label><input id="nama" placeholder="Nama lengkap"><label>NI PPPK PW. / NIP</label><input id="nip"><label>Jabatan</label><input id="jabatan"><label>Uraian Kegiatan</label><textarea id="uraian"></textarea><label>Hasil Kegiatan</label><textarea id="hasil"></textarea><label>Kesimpulan</label><textarea id="kesimpulan"></textarea><label>Tanda Tangan Pegawai (gambar)</label><input id="signature" type="file" accept="image/*"><label>Bukti Dukung (foto/PDF/dokumen)</label><input id="files" type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"><p class="filelabel">Berkas disimpan secara lokal di perangkat. Ukuran file besar dapat memenuhi ruang penyimpanan.</p><div class="actions"><button type="button" class="primary" onclick="saveReport()">Simpan Laporan</button><button onclick="resetForm()">Batal</button></div></div></section>
 <section id="list" class="hidden"><div class="card"><h3>Rekap Laporan</h3><input id="search" placeholder="Cari nama, tugas, atau tanggal..." oninput="renderList()"><div id="reports"></div></div></section>
 <section id="backup" class="hidden"><div class="card"><h3>Backup & Pemulihan Data</h3><p>Ekspor seluruh laporan beserta foto/tanda tangan dalam satu file JSON. Simpan file di Google Drive, komputer, atau media lain untuk cadangan (internet tidak diperlukan untuk ekspor).</p><div class="actions"><button class="primary" onclick="backup()">Ekspor Backup</button><label style="margin:0"><input type="file" id="restoreFile" accept=".json,application/json" onchange="restore(event)"></label></div><hr><button onclick="exportCSV()">Ekspor Rekap Excel (CSV)</button><button class="danger" onclick="logout()">Keluar</button><p class="muted">Menghapus data aplikasi atau uninstall dapat menghilangkan data lokal jika belum dibackup.</p></div></section>
 <section id="printView" class="hidden"><div class="print-toolbar no-print"><button class="primary" onclick="doPrint()">CETAK</button><button onclick="closePrint()">KEMBALI</button></div><article id="printContent" class="print-paper"></article></section>
@@ -26,8 +26,80 @@ function logout(){$('app').classList.add('hidden');$('login').classList.remove('
 function page(id,btn){['home','form','list','backup'].forEach(x=>$(x).classList.toggle('hidden',x!==id));document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');if(id==='list')renderList();if(id==='form'&&!$('tanggal').value)$('tanggal').value=new Date().toISOString().slice(0,10)}
 function loadOptions(){let c=$('category').value,arr=c==='task'?master.tasks:c==='jenis'?master.jenis:[];$('taskSelect').innerHTML='<option value="">-- Pilih --</option>'+arr.map((x,i)=>`<option value="${i}">${esc(x[0])}</option>`).join('');$('taskSelect').disabled=!arr.length}
 function fillTask(){let c=$('category').value,i=+$('taskSelect').value,x=(c==='task'?master.tasks:master.jenis)[i];if(!x)return;$('uraian').value=x[1]||'';$('hasil').value=x[2]||'';$('kesimpulan').value=x[3]||''}
-function fileData(file){return new Promise(resolve=>{if(!file)return resolve(null);let r=new FileReader();r.onload=()=>resolve({name:file.name,type:file.type,data:r.result});r.onerror=()=>resolve(null);r.readAsDataURL(file)})}
-async function saveReport(){let id=$('editId').value;let signature=await fileData($('signature').files[0]);let files=await Promise.all([...$('files').files].map(fileData));let old=reports.find(x=>x.id===id);let obj={id:id||String(Date.now()),category:$('category').value,task:$('taskSelect').selectedOptions[0]?.text||'',nomor:$('nomor').value,tanggal:$('tanggal').value,nama:$('nama').value,nip:$('nip').value,jabatan:$('jabatan').value,uraian:$('uraian').value,hasil:$('hasil').value,kesimpulan:$('kesimpulan').value,pejabat:$('pejabat').value,pejabatnip:$('pejabatnip').value,namattd:$('namattd').value,signature:signature||old?.signature||null,files:files.filter(Boolean).length?files.filter(Boolean):(old?.files||[])};if(!obj.tanggal||!obj.nama||!obj.uraian){alert('Tanggal, nama pegawai, dan uraian wajib diisi.');return}if(old)reports=reports.map(x=>x.id===id?obj:x);else reports.unshift(obj);localStorage.setItem('silakReports',JSON.stringify(reports));alert('Laporan berhasil disimpan di perangkat.');resetForm();refresh();page('list')}
+function fileData(file){
+ return new Promise(resolve=>{
+  if(!file)return resolve(null);
+  if(file.type&&file.type.startsWith('image/')){
+   const reader=new FileReader();
+   reader.onload=()=>{
+    const img=new Image();
+    img.onload=()=>{
+     try{
+      const max=1280,scale=Math.min(1,max/Math.max(img.width,img.height));
+      const canvas=document.createElement('canvas');
+      canvas.width=Math.max(1,Math.round(img.width*scale));
+      canvas.height=Math.max(1,Math.round(img.height*scale));
+      const ctx=canvas.getContext('2d');
+      ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      resolve({name:file.name,type:'image/jpeg',data:canvas.toDataURL('image/jpeg',0.62)});
+     }catch(e){resolve(null)}
+    };
+    img.onerror=()=>resolve(null);
+    img.src=reader.result;
+   };
+   reader.onerror=()=>resolve(null);
+   reader.readAsDataURL(file);
+  }else{
+   if(file.size>1200000){alert('File '+file.name+' terlalu besar. Maksimal 1,2 MB untuk PDF/dokumen.');return resolve(null)}
+   const r=new FileReader();
+   r.onload=()=>resolve({name:file.name,type:file.type,data:r.result});
+   r.onerror=()=>resolve(null);
+   r.readAsDataURL(file);
+  }
+ });
+}
+async function saveReport(){
+ const btn=document.querySelector('#form .actions button.primary');
+ if(btn){btn.disabled=true;btn.textContent='Menyimpan...'}
+ try{
+  const id=$('editId').value;
+  const signature=await fileData($('signature').files[0]);
+  const selectedFiles=[...$('files').files];
+  const files=await Promise.all(selectedFiles.map(fileData));
+  if(selectedFiles.length&&files.filter(Boolean).length!==selectedFiles.length){
+   alert('Ada berkas yang gagal dibaca atau terlalu besar. Silakan pilih ulang berkas tersebut.');return;
+  }
+  const old=reports.find(x=>x.id===id);
+  const obj={
+   id:id||String(Date.now()),category:$('category').value,
+   task:$('taskSelect').selectedOptions[0]?.text||'',
+   nomor:$('nomor').value,tanggal:$('tanggal').value,nama:$('nama').value,
+   nip:$('nip').value,jabatan:$('jabatan').value,uraian:$('uraian').value,
+   hasil:$('hasil').value,kesimpulan:$('kesimpulan').value,
+   pejabat:$('pejabat')?.value||'',pejabatnip:$('pejabatnip')?.value||'',
+   namattd:$('namattd')?.value||'',
+   signature:signature||old?.signature||null,
+   files:files.length?files:(old?.files||[])
+  };
+  if(!obj.tanggal||!obj.nama||!obj.uraian){
+   alert('Tanggal, nama pegawai, dan uraian wajib diisi.');return;
+  }
+  const next=old?reports.map(x=>x.id===id?obj:x):[obj,...reports];
+  try{localStorage.setItem('silakReports',JSON.stringify(next));}
+  catch(storageError){
+   alert('Penyimpanan perangkat penuh. Kurangi ukuran/jumlah foto atau ekspor backup lalu hapus laporan lama.');return;
+  }
+  reports=next;
+  alert('Laporan berhasil disimpan di perangkat.');
+  resetForm();refresh();page('list');
+ }catch(e){
+  console.error('SILAK saveReport error',e);
+  alert('Gagal menyimpan laporan: '+(e&&e.message?e.message:'Kesalahan tidak diketahui'));
+ }finally{
+  if(btn){btn.disabled=false;btn.textContent='Simpan Laporan'}
+ }
+}
 function resetForm(){$('form').querySelectorAll('input:not([type=file]),textarea').forEach(x=>x.value='');$('editId').value='';$('tanggal').value=new Date().toISOString().slice(0,10);$('category').value='task';loadOptions();$('formTitle').textContent='Tambah Laporan';$('signature').value='';$('files').value=''}
 function editReport(id){let x=reports.find(r=>r.id===id);if(!x)return;page('form');$('formTitle').textContent='Edit Laporan';$('editId').value=x.id;['nomor','tanggal','nama','nip','jabatan','uraian','hasil','kesimpulan'].forEach(k=>$(k).value=x[k]||'');$('category').value=x.category;loadOptions();let idx=(x.category==='task'?master.tasks:master.jenis).findIndex(t=>t[0]===x.task);$('taskSelect').value=idx>=0?idx:''}
 function delReport(id){if(confirm('Hapus laporan ini?')){reports=reports.filter(x=>x.id!==id);localStorage.setItem('silakReports',JSON.stringify(reports));refresh();renderList()}}
